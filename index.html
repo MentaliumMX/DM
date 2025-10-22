@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)file:///Users/mac/Desktop/Tablero%20DM/Tablero_DM.html#notocar -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero DM — Integrado (FDS + ES en tablas)</title>
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./Tablero DM_files/css2" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc; --ink:#0f172a; --muted:#6b7280; --line:#e6ecf5; --card:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.container{max-width:1200px;margin:24px auto;padding:0 16px}
+h1{margin:0 0 4px;font-size:24px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  
+/* --- Scroll horizontal para móvil --- */
+@media (max-width: 768px) {
+  .quick-grid {
+    display: flex !important;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px;
+  }
+  .quick-grid::-webkit-scrollbar {
+    height: 8px;
+  }
+  .quick-grid::-webkit-scrollbar-thumb {
+    background: #c3c7d1;
+    border-radius: 8px;
+  }
+  .card {
+    flex: 0 0 220px !important;
+    scroll-snap-align: start;
+    min-width: 220px;
+  }
+}
+
+/* Tarjetas */
+.quick-grid{display:grid;gap:16px;grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:1100px){.quick-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:900px){.quick-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.quick-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:430px){.quick-grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;box-shadow:0 1px 2px rgba(2,6,23,.04);transition:.2s transform}
+.card:hover{transform:translateY(-2px)}
+.card .thumb{height:140px;border-radius:12px;background:#eef5ff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#37599b}
+.card h3{margin:10px 0 2px;font-size:16px}
+.card p{margin:0;color:var(--muted);font-size:13px}
+
+/* Escenario dinámico */
+.stage{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:20px;padding:10px}
+.view{display:none}
+.view.active{display:block}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pretty{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pretty th,.pretty td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+.pretty thead th{background:#f1f5fb;text-align:left;color:#1f2a44;font-weight:600}
+.pretty tbody tr:last-child td{border-bottom:none}
+.tag{display:inline-block;background:#eef5ff;color:#374a79;border:1px solid #d9e5ff;padding:4px 10px;border-radius:999px;font-size:12px;margin:8px 0}
+
+/* Botones y modal para “No Tocar” */
+.btn{background:#0ea5e9;border:1px solid #0793ce;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.btn.ghost{background:#fff;color:#0b539b;border-color:#cfe6fb}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin:8px 0 12px}
+.backdrop{position:fixed;inset:0;background:rgba(2,6,23,.42);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:#fff;max-width:720px;width:100%;border:1px solid var(--line);border-radius:14px;padding:16px}
+.modal h3{margin:0 0 10px} .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:13px;color:#22314f;margin:8px 0 4px} input,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+textarea{min-height:120px;resize:vertical}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+.small{font-size:12px;color:#6b7280}
+
+/* Territorio & Anuncios */
+.territorio-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.territorio-wrap{grid-template-columns:1fr}}
+.territorio-wrap img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+.anuncios{display:flex;flex-direction:column;gap:12px}
+.item{background:#f9fbff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.item .fecha{color:#6b7280;font-size:13px;margin-bottom:2px}
+.item .titulo{font-weight:700}
+
+/* =============================
+   REUNIÓN ENTRE SEMANA — REDISEÑO COMPLETO
+   ============================= */
+.section-es .bloque {
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 3px 6px rgba(15,23,42,.12);
+}
+.section-es .bloque h3 {
+  margin: 0;
+  padding: 10px 16px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .4px;
+}
+.section-es .bloque table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.section-es .bloque th, .section-es .bloque td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+.section-es .bloque tbody tr:last-child td {
+  border-bottom: none;
+}
+.section-es .bloque.azul h3 {background:#1e3a8a;}
+.section-es .bloque.naranja h3 {background:#ea580c;}
+.section-es .bloque.vino h3 {background:#7f1d1d;}
+
+/* Estilo para acomodadores (bloques mensuales) */
+.section-es .tabla-mes {
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  box-shadow: 0 3px 6px rgba(15,23,42,.12);
+}
+.section-es .tabla-mes h4 {
+  margin: 0;
+  padding: 10px 16px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.section-es table.pretty-mes {
+  width: 100%;
+  border-collapse: collapse;
+}
+.section-es table.pretty-mes th, .section-es table.pretty-mes td {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 14px;
+}
+	
+	.thumb img {
+  width: 65%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+
+.section-es .tabla-oct h4 {background:#f59e0b;}
+.section-es .tabla-oct tbody tr:nth-child(odd) {background:#fef3c7;}
+.section-es .tabla-oct tbody tr:nth-child(even) {background:#fffbeb;}
+</style>
+<style type="text/css" id="operaUserStyle"></style></head>
+<body>
+<div class="container">
+  <h1>Congregación Diaz Mirón</h1>
+  <p class="sub">Infomación de la congregación Diaz Mirón</p>
+
+  <div class="quick-grid" id="quickGrid">
+    <div class="card" data-target="fds"><div class="thumb"> <img src="ICONOS/COLOR/Ico-RFS.svg" alt="Fin de Semana"></div><h3>Reunión de fin de semana</h3><p>Programa y acomodadores.</p></div>
+    <div class="card" data-target="es"><div class="thumb"> <img src="ICONOS/COLOR/Ico-RES.svg" alt="Entre Semana"></div><h3>Reunión entre semana</h3><p>Programa y acoomodadores.</p></div>
+    <div class="card" data-target="territorio"><div class="thumb"> <img src="ICONOS/COLOR/ICO-M.svg" alt="Territorio"></div><h3>Territorio</h3><p>Mapas Díaz Mirón.</p></div>
+    <div class="card" data-target="anuncios"><div class="thumb"> <img src="ICONOS/COLOR/ICO-A.svg" alt="Anuncios"></div><h3>Tablero de anuncios</h3><p>Próximos eventos.</p></div>
+    <div class="card" data-target="notocar"><div class="thumb""> <img src="ICONOS/COLOR/ICO-NT.svg" alt="NO Tocar"></div><h3>NO TOCAR</h3><p>Direcciones del Territorio.</p></div>
+  </div>
+
+  <div class="stage">
+    <!-- FDS -->
+    <div class="view" data-view="fds">
+      <h2>Reunión de fin de semana</h2>
+      <div class="tag">Programa por mes</div>
+      <div class="table-wrap">
+        <table class="pretty">
+          <thead><tr><th>Mes</th><th>Día</th><th>Presidente</th><th>Lector</th><th>Oración</th><th>Hospitalidad</th></tr></thead>
+          <tbody>
+            <!-- Octubre -->
+            <tr><td>Octubre</td><td>5</td><td>Ricardo Cholico</td><td>Said Montaño</td><td>Saúl Jiménez</td><td>G.2</td></tr>
+            <tr><td>Octubre</td><td>12</td><td>Andrey Durán</td><td>Rosendo Cholico</td><td>Rogelio García</td><td>G.3</td></tr>
+            <tr><td>Octubre</td><td>19</td><td>Esteban Fernández</td><td>Rogelio García</td><td>Andrey Durán</td><td>G.4</td></tr>
+            <tr><td>Octubre</td><td>26</td><td>Rogelio García</td><td>Pedro Jiménez</td><td>Ricardo Cholico</td><td>G.1</td></tr>
+            <!-- Noviembre -->
+            <tr><td><strong>Noviembre</strong></td><td>2</td><td colspan="3">ASAMBLEA DE CIRCUITO</td><td></td></tr>
+            <tr><td>Noviembre</td><td>9</td><td>Rosendo Cholico</td><td>—</td><td>Esteban Fernández</td><td>G.2</td></tr>
+            <tr><td>Noviembre</td><td>16</td><td>Pedro Jiménez</td><td>Andrey Durán</td><td>Pedro Jiménez</td><td>G.3</td></tr>
+            <tr><td>Noviembre</td><td>23</td><td>Saúl Montaño</td><td>Marco A. Martínez</td><td>Saúl Montaño</td><td>—</td></tr>
+            <tr><td>Noviembre</td><td>30</td><td>José A. Hernández</td><td>Luis Téllez</td><td>Rosendo Cholico</td><td>G.4</td></tr>
+            <!-- Diciembre -->
+            <tr><td><strong>Diciembre</strong></td><td>6</td><td>Ricardo Cholico</td><td>Eduardo Barrios</td><td>Andrey Durán</td><td>G.1</td></tr>
+            <tr><td>Diciembre</td><td>13</td><td>Andrey Durán</td><td>Arturo Alvarado</td><td>Saúl Jiménez</td><td>G.2</td></tr>
+            <tr><td>Diciembre</td><td>20</td><td>Esteban Fernández</td><td>Ricardo Cholico</td><td>Rogelio García</td><td>G.3</td></tr>
+            <tr><td>Diciembre</td><td>27</td><td>Rogelio García</td><td>Said Montaño</td><td>Ricardo Cholico</td><td>G.4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="height:8px"></div>
+      <div class="tag">Acomodadores — Sábados</div>
+      <div class="table-wrap">
+        <table class="pretty">
+          <thead><tr><th>Mes</th><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr></thead>
+          <tbody>
+            <!-- Octubre -->
+            <tr><td>Octubre</td><td>Sábado 4</td><td>Rogelio García</td><td>Marco A. Martínez</td><td>Said Montaño</td></tr>
+            <tr><td>Octubre</td><td>Sábado 11</td><td>Pedro Jiménez</td><td>Jorge Vergara</td><td>Andrey Durán</td></tr>
+            <tr><td>Octubre</td><td>Sábado 18</td><td>Rosendo Cholico</td><td>Eduardo Barrios</td><td>Esteban Fernández</td></tr>
+            <tr><td>Octubre</td><td>Sábado 25</td><td>Esteban Fernández</td><td>Luis Téllez</td><td>—</td></tr>
+            <!-- Noviembre -->
+            <tr><td>Noviembre</td><td>Sábado 8</td><td>Ricardo Cholico</td><td>Pedro Jiménez</td><td>Marco A. Martínez</td></tr>
+            <tr><td>Noviembre</td><td>Sábado 15</td><td>Andrey Durán</td><td>Emiliano Sanchez</td><td>Rogelio García</td></tr>
+            <tr><td>Noviembre</td><td>Sábado 22</td><td>Said Montaño</td><td>Andrey Durán</td><td>Marco A. Martínez</td></tr>
+            <tr><td>Noviembre</td><td>Sábado 29</td><td>Esteban Fernández</td><td>Angel Sanchez</td><td>Luis Téllez</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Entre semana -->
+    <div class="view section-es" data-view="es">
+      <h2>Reunión entre semana</h2>
+
+      <div class="tag">16 de Octubre — Presidente: Rogelio García — Canción 39 · Eclesiastés 7, 8</div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Vayamos “a la casa donde hay duelo” (10 min.)</td><td>Ricardo Cholico</td><td>—</td><td>Auditorio Principal</td></tr>
+          <tr><td>Busquemos perlas escondidas (10 min.)</td><td>Andrey Durán</td><td>—</td><td>Auditorio Principal</td></tr>
+          <tr><td>Lectura de la Biblia (4 min) Ec 8:1-13</td><td>Ángel Sánchez</td><td>—</td><td>Auditorio Principal</td></tr>
+        </tbody>
+      </table></div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Empiece conversaciones (2 min.)</td><td>Roma Alvarado</td><td>Piedad Molina</td><td>—</td></tr>
+          <tr><td>Empiece conversaciones (2 min.)</td><td>Deyannia España</td><td>Jael Vásquez</td><td>—</td></tr>
+          <tr><td>Haga revisitas (3 min.)</td><td>Iliana de Montaño</td><td>Karen Franco</td><td>—</td></tr>
+          <tr><td>Explique sus creencias (5 min.)</td><td>Epifania García</td><td>Verónica de Andrade</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Canción 151</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Fortalezca su fe en la resurrección (15 min.)</td><td>Esteban Fernández</td><td>—</td><td>—</td></tr>
+          <tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Pedro Jiménez</td><td>—</td><td>—</td></tr>
+          <tr><td>Canción 124 · Palabras de conclusión (3 min.) · Oración: Pedro Jiménez · Lector: Marco Martínez</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="tag">23 de Octubre — Presidente: Andrey Durán — Canción 30 · Eclesiastés 9, 10</div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Tengamos un punto de vista equilibrado (10 min.)</td><td>Esteban Fernández</td><td>—</td><td>Auditorio Principal</td></tr>
+          <tr><td>Busquemos perlas escondidas (10 min.)</td><td>Ricardo Cholico</td><td>—</td><td>Auditorio Principal</td></tr>
+          <tr><td>Lectura de la Biblia (4 min) Ec 10:1-20</td><td>Arturo Alvarado</td><td>—</td><td>Auditorio Principal</td></tr>
+        </tbody>
+      </table></div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Empiece conversaciones (3 min.)</td><td>Rocío Rivas</td><td>Ana Alemán</td><td>—</td></tr>
+          <tr><td>Empiece conversaciones (4 min.)</td><td>José A. Hernández</td><td>Ricardo Cholico</td><td>—</td></tr>
+          <tr><td>Haga discípulos (5 min.)</td><td>Karla Téllez</td><td>Valeria Almreaya</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Canción 47</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Jehová nos da estabilidad… (15 min.)</td><td>Rogelio García</td><td>—</td><td>—</td></tr>
+          <tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Ricardo Cholico</td><td>—</td><td>—</td></tr>
+          <tr><td>Canción 28 · Palabras de conclusión (3 min.) · Oración final: Saúl Jiménez · Lector: Jorge Vergara</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="tag">30 de Octubre — Presidente: Pedro Jiménez — Canción 155 · Eclesiastés 11, 12</div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Disfrute de una vida feliz y saludable (10 min.)</td><td>Rogelio García</td><td>—</td><td>Auditorio Principal</td></tr>
+          <tr><td>Busquemos perlas escondidas (10 min.)</td><td>Esteban Fernández</td><td>—</td><td>Auditorio Principal</td></tr>
+          <tr><td>Lectura de la Biblia (4 min) Ec 12:1-14</td><td>Daniel Segura</td><td>—</td><td>Auditorio Principal</td></tr>
+        </tbody>
+      </table></div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Haga revisitas (3 min.)</td><td>Jazmín Pérez</td><td>Josefina Trujillo</td><td>—</td></tr>
+          <tr><td>Haga revisitas (4 min.)</td><td>Rosalinda Martínez</td><td>Hermelinda Aguilar</td><td>—</td></tr>
+          <tr><td>Discurso (5 min.)</td><td>Florentino Tonches</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <div class="table-wrap"><table class="pretty">
+        <thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>Canción 111</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Necesidades de la congregación (15 min.)</td><td>Pedro Jiménez</td><td>—</td><td>—</td></tr>
+          <tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Ricardo Cholico</td><td>—</td><td>—</td></tr>
+          <tr><td>Canción 8 · Palabras de conclusión (3 min.) · Oración: Ricardo Cholico</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+<div style="height:12px"></div>
+<h2>Acomodadores — Jueves</h2>
+<div class="table-wrap">
+  <table class="pretty">
+    <thead style="background:#f59e0b;color:#fff;font-weight:700;text-align:left;">
+      <tr><th colspan="4" style="font-size:16px;">Octubre</th></tr>
+      <tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Jueves 2</td><td>Esteban Fernández</td><td>Rogelio García</td><td>Eduardo Barrios</td></tr>
+      <tr><td>Jueves 9</td><td>Ricardo Cholico</td><td>Angel Sanchez</td><td>Jose A. Hernández</td></tr>
+      <tr><td>Jueves 16</td><td>Andrey Durán</td><td>Jose A. Hernández</td><td>Jordy Vielma</td></tr>
+      <tr><td>Jueves 23</td><td>Said Montaño</td><td>Arturo Alvarado</td><td>Marco A. Martínez</td></tr>
+      <tr><td>Jueves 30</td><td>Saul Jiménez</td><td>Rogelio García</td><td>Gabino Rivas</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="height:12px"></div>
+<div class="table-wrap">
+  <table class="pretty">
+    <thead style="background:#9ca3af;color:#fff;font-weight:700;text-align:left;">
+      <tr><th colspan="4" style="font-size:16px;">Noviembre</th></tr>
+      <tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sábado 2</td><td colspan="3" style="text-align:center;font-style:italic;letter-spacing:2px;">ASAMBLEA DE CIRCUITO</td></tr>
+      <tr><td>Jueves 6</td><td>Rogelio García</td><td>Esteban Fernández</td><td>Said Montaño</td></tr>
+      <tr><td>Jueves 13</td><td>Pedro Jiménez</td><td>Eduardo Barrios</td><td>Luis Tellez</td></tr>
+      <tr><td>Jueves 20</td><td>Rosendo Cholico</td><td>Arturo Alvarado</td><td>Jose A. Hernández</td></tr>
+      <tr><td>Jueves 27</td><td>Saul Jiménez</td><td>Gabino Rivas</td><td>Said Montaño</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+    </div>
+
+    <!-- Territorio -->
+    <div class="view" data-view="territorio">
+      <h2>Territorio — Díaz Mirón</h2>
+      <div class="territorio-wrap">
+        <img src="./Tablero DM_files/Territorio1.png" alt="Mapa general">
+        <img src="./Tablero DM_files/Territorio2.png" alt="Sector 3x / 33x">
+      </div>
+    </div>
+
+    <!-- Anuncios -->
+    <div class="view" data-view="anuncios">
+      <h2>Tablero de anuncios</h2>
+      <div class="anuncios" id="anunciosList"><div class="item"><div class="fecha">sáb, 1 nov 2025</div><div class="titulo">Asamblea de circuito con el representante de la sucursal</div></div><div class="item"><div class="fecha">dom, 22 feb 2026</div><div class="titulo">Asamblea de circuito con el superintendente de circuito</div></div><div class="item" style="background: rgb(238, 245, 255);"><div class="fecha">jue, 2 abr 2026</div><div class="titulo">Conmemoración</div></div></div>
+    </div>
+
+    <!-- NO TOCAR -->
+    <div class="view active" data-view="notocar">
+      <h2>Direcciones «No Tocar» — Vista simple</h2>
+      <p class="sub">Al final puedes reportar; se abrirá tu correo para enviar a <code>live24a@gmail.com</code>.</p>
+      <div class="table-wrap">
+        <table class="pretty">
+          <thead><tr><th>Territorio</th><th>Calle / Depto.</th><th>Letra</th><th>Detalles</th><th>Número</th><th>Estado</th><th>Descripción evento</th><th>Responsable</th><th>Última revisión</th></tr></thead>
+          <tbody id="noTocarBody">
+<tr><td>2</td><td>Seminario</td><td>A</td><td>Casa a media escalera.</td><td>1</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>2</td><td>Seminario</td><td>C</td><td>Casa verde a media escalera con un “9 3/4” en la puerta.</td><td>2</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>4</td><td>1a entrada</td><td>B</td><td>Casita de madera en la primera entrada del predio.</td><td>33</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>5</td><td>Entrada 15-17</td><td></td><td>Escalera de la entrada. Torres Quiroga.</td><td>201</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>5</td><td>Entrada 23</td><td></td><td>Entrada al lado del estacionamiento. Escalera del fondo. Torres Quiroga.</td><td>409</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>5</td><td>Entrada 23</td><td></td><td>Entrada al lado del estacionamiento. Escalera del fondo. Torres Quiroga.</td><td>411</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>6</td><td>Entrada 9-11</td><td></td><td>Escalera del fondo. Torres Quiroga.</td><td>11</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>7</td><td>Entrada 1-3</td><td></td><td>Escalera del fondo. Torres Quiroga.</td><td>111</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>7</td><td>Entrada 5-7</td><td></td><td>Escalera del fondo. Torres Quiroga.</td><td>11</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>7</td><td>Entrada 5-7</td><td></td><td>Escalera de la entrada. Torres Quiroga.</td><td>304</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>8</td><td>Oriente 157</td><td>D</td><td>Casa con puerta de madera.</td><td>3816</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>8</td><td>Norte 74</td><td>F</td><td>Casa color vino con portón blanco.</td><td>8011</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>9</td><td>Norte 72-B</td><td>C</td><td>Casa con puerta y portón negros.</td><td>8106</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>9</td><td>Oriente 157</td><td>F</td><td>Casa esquina Norte 72a. Casa verde con letrero de renta de autobuses.</td><td>3712</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>9</td><td>Norte 72</td><td>H</td><td>Casa color lila con portón negro y puerta de reja negra con tres troneras.</td><td>s/n</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>10</td><td>Oriente 159</td><td>G</td><td>Casa blanca con puerta negra.</td><td>3320</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>11</td><td>Norte 64-A</td><td>C</td><td>Casa naranja con puerta de madera.</td><td>7810</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>11</td><td>Norte 64-A</td><td>E</td><td>Casa color lila y portón blanco con ventanas de aluminio color oro.</td><td>7827</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>11</td><td>Oriente 155</td><td>F</td><td>Casa verde con letrero de “Natura”.</td><td>3316</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>11</td><td>Oriente 155</td><td>F</td><td>Casa verde con puertas blancas.</td><td>3324</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>11</td><td>Oriente 153</td><td>G</td><td>Casa color rojo con tejado en el portón, junto a las oficinas de la dirección distrital 04.</td><td>3404</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>12</td><td>Oriente 155</td><td>A</td><td>Casa de cemento con portón color cobre.</td><td>3404</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>12</td><td>Oriente 153</td><td>C</td><td>Casa amarilla en la esquina Norte 68.</td><td>3502</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>12</td><td>Norte 68</td><td>C</td><td>Casa blanca con cortina y portón blanco, con un pino enfrente, a lado de casa anaranjada.</td><td>7827</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>13</td><td>Norte 72</td><td>B</td><td>Casa rosa con portón café.</td><td>7810</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>14</td><td>Norte 74</td><td>A</td><td>Casa azul con portón blanco.</td><td>7807</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>14</td><td>Norte 74</td><td>A</td><td>Casa color café con azulejos pequeños café y verde, con portón blanco.</td><td>7821</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>14</td><td>Oriente 155</td><td>B</td><td>Casa gris, pared con acabado Tirol rústico, portón negro.</td><td>3804</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>14</td><td>Norte 74</td><td>B</td><td>*Probable 7913.* Casa amarillo ámbar con paredes deterioradas y portón blanco.</td><td>7913*</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>14</td><td>Norte 74-A</td><td>C</td><td>Casa blanca con portón café y adornos de alcatraz.</td><td>7805</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>15</td><td>Norte 76</td><td>A</td><td>Casa azul cielo con puerta blanca.</td><td>7727</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>15</td><td>Norte 76</td><td>B</td><td>Casa blanca de 2 pisos con farolas y portón oscuro.</td><td>7730</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>16</td><td>Gregorio Pairo</td><td>D</td><td>Casa esquina Félix Romero. Casa verde olivo con tienda de abarrotes.</td><td>15</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>17</td><td>Gabino Ortiz</td><td>A</td><td>Casa esquina Francisco Díaz. Casa color pistache y verde oscuro, portón blanco en la esquina.</td><td>14</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>20</td><td>Depto. 14</td><td></td><td>Unidad DM Nacional.</td><td>404</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>30</td><td>Valentín Canalizo</td><td>C</td><td>Casa blanca.</td><td>71</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>31</td><td>Calle sexta</td><td>B</td><td>Casa verde turquesa.</td><td>29</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>31</td><td>Artes</td><td>H</td><td>Casa de 2 pisos, mosaico café en la parte de abajo y durazno arriba. Portón negro.</td><td>s/n</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>31</td><td>Calle séptima</td><td>H</td><td>Casa anaranjada con rojo.</td><td>15</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>31</td><td>Calle novena</td><td>F</td><td>Casa blanca con portón negro.</td><td>14</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+<tr><td>32</td><td>Capilla</td><td>A</td><td>Casa azul cielo con puerta verde.</td><td>s/n</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
+</tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button id="openReport" class="btn">Reportar nuevo “No Tocar”</button>
+        <button id="downloadCsv" class="btn ghost">Descargar CSV actual</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Reporte -->
+<div class="backdrop" id="backdrop">
+  <div class="modal">
+    <h3>Reportar “No Tocar”</h3>
+    <p class="small">Completa los campos. Al enviar, se abrirá un correo listo para mandar a <strong>live24a@gmail.com</strong>.</p>
+    <form id="reportForm">
+      <div class="row">
+        <div><label>Territorio</label><input name="territorio" required=""></div>
+        <div><label>Calle / Depto.</label><input name="calle" required=""></div>
+      </div>
+      <div class="row">
+        <div><label>Número</label><input name="numero"></div>
+        <div><label>Responsable (quien reporta)</label><input name="responsable" required=""></div>
+      </div>
+      <label>Detalles</label>
+      <textarea name="detalles" placeholder="Descripción breve de por qué no se toca, colores de puerta, referencias, etc."></textarea>
+      <div class="form-actions">
+        <button type="button" id="cancel" class="btn ghost">Cancelar</button>
+        <button class="btn" type="submit">Enviar por correo</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  function show(view){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    const sec = document.querySelector('.view[data-view="'+view+'"]');
+    if(sec){ sec.classList.add('active'); }
+    location.hash = view;
+  }
+  document.getElementById('quickGrid').addEventListener('click', (e)=>{
+    const card = e.target.closest('.card[data-target]'); if(!card) return;
+    show(card.getAttribute('data-target'));
+  });
+  show((location.hash||'').replace('#','') || 'fds');
+
+  // Anuncios (texto)
+  const anuncios = [
+    {fecha:'sáb, 1 nov 2025', titulo:'Asamblea de circuito con el representante de la sucursal'},
+    {fecha:'dom, 22 feb 2026', titulo:'Asamblea de circuito con el superintendente de circuito'},
+    {fecha:'jue, 2 abr 2026', titulo:'Conmemoración', destacado:true},
+  ];
+  const list = document.getElementById('anunciosList');
+  anuncios.forEach(a=>{
+    const el = document.createElement('div');
+    el.className = 'item';
+    if(a.destacado){ el.style.background='#eef5ff'; }
+    el.innerHTML = '<div class="fecha">'+a.fecha+'</div><div class="titulo">'+a.titulo+'</div>';
+    list.appendChild(el);
+  });
+
+  // Modal
+  const bd = document.getElementById('backdrop');
+  const openBtn = document.getElementById('openReport'); if(openBtn) openBtn.onclick = ()=> bd.style.display='flex';
+  const cancelBtn = document.getElementById('cancel'); if(cancelBtn) cancelBtn.onclick = ()=> bd.style.display='none';
+
+  // Mailto submit
+  const form = document.getElementById('reportForm');
+  if(form){
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const to = 'live24a@gmail.com';
+      const subject = encodeURIComponent('Reporte NO TOCAR — Territorio ' + (fd.get('territorio')||''));
+      const body = [
+        'Territorio: ' + (fd.get('territorio')||''),
+        'Calle / Depto.: ' + (fd.get('calle')||''),
+        'Número: ' + (fd.get('numero')||''),
+        'Detalles: ' + (fd.get('detalles')||''),
+        'Reportado por: ' + (fd.get('responsable')||'')
+      ].join('\\n');
+      const href = 'mailto:'+to+'?subject='+subject+'&body='+encodeURIComponent(body);
+      window.location.href = href;
+      bd.style.display='none';
+    });
+  }
+
+  // Export CSV de la tabla actual de No Tocar
+  const dl = document.getElementById('downloadCsv');
+  if(dl){
+    dl.onclick = ()=>{
+      const rows = Array.from(document.querySelectorAll('[data-view="notocar"] tbody tr')).map(tr =>
+        Array.from(tr.children).map(td => (td.textContent||'').replace(/\\n+/g,' ').trim()).join(','));
+      const header = 'Territorio,Calle / Depto.,Letra,Detalles,Número,Estado,Descripción evento,Responsable,Última revisión';
+      const csv = [header, ...rows].join('\\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'NO_TOCAR_export.csv'; a.click();
+      URL.revokeObjectURL(url);
+    };
+  }
+})();
+</script>
+
+
+
+<script>
+document.querySelectorAll('.section-es thead').forEach(thead => {
+  const firstTh = thead.querySelector('th:first-child');
+  if (!firstTh) return;
+  const text = firstTh.textContent.trim();
+  let color = '';
+
+  if (text === 'Tesoros de la Biblia') color = '#1e3a8a';       // Azul
+  else if (text === 'Seamos mejores maestros') color = '#ea580c'; // Naranja
+  else if (text === 'Nuestra vida cristiana') color = '#7f1d1d'; // Vino
+
+  if (color) {
+    thead.querySelectorAll('th').forEach(th => {
+      th.style.background = color;
+      th.style.color = '#fff';
+    });
+  }
+});
+</script>
+
+
+<script>
+// Colores de secciones
+document.querySelectorAll('.section-es thead').forEach(thead => {
+  const firstTh = thead.querySelector('th:first-child');
+  if (!firstTh) return;
+  const text = firstTh.textContent.trim();
+  let color = '';
+
+  if (text === 'Tesoros de la Biblia') color = '#1e3a8a';       // Azul
+  else if (text === 'Seamos mejores maestros') color = '#ea580c'; // Naranja
+  else if (text === 'Nuestra vida cristiana') color = '#7f1d1d'; // Vino
+
+  if (color) {
+    thead.querySelectorAll('th').forEach(th => {
+      th.style.background = color;
+      th.style.color = '#fff';
+    });
+  }
+});
+
+// Colores para los meses de los acomodadores
+document.querySelectorAll('thead tr th[colspan]').forEach(th => {
+  const text = th.textContent.trim();
+  let color = '';
+
+  if (text.includes('Octubre')) color = '#f59e0b';     // Dorado
+  else if (text.includes('Noviembre')) color = '#9ca3af'; // Gris
+  else if (text.includes('Diciembre')) color = '#16a34a'; // Verde
+
+  if (color) {
+    th.style.background = color;
+    th.style.color = '#fff';
+  }
+});
+</script>
+
+
+<script>
+// Colores de encabezado y filas alternas para los Acomodadores — Sábados
+document.querySelectorAll('h2').forEach(h2 => {
+  if (h2.textContent.includes('Acomodadores — Sábados')) {
+    const tables = h2.parentElement.querySelectorAll('table.pretty');
+    tables.forEach(table => {
+      const headerTh = table.querySelector('thead th[colspan]');
+      if (headerTh) {
+        const text = headerTh.textContent.trim();
+        let color = '', row1 = '', row2 = '';
+        if (text.includes('Octubre')) {
+          color = '#f59e0b'; row1 = '#fef3c7'; row2 = '#fffbeb';
+        } else if (text.includes('Noviembre')) {
+          color = '#9ca3af'; row1 = '#e5e7eb'; row2 = '#f3f4f6';
+        } else if (text.includes('Diciembre')) {
+          color = '#15803d'; row1 = '#dcfce7'; row2 = '#f0fdf4';
+        }
+        if (color) {
+          // Pleca
+          headerTh.style.background = color;
+          headerTh.style.color = '#fff';
+          // Filas alternas
+          const rows = table.querySelectorAll('tbody tr');
+          rows.forEach((tr, i) => {
+            tr.style.background = i % 2 === 0 ? row1 : row2;
+          });
+        }
+      }
+    });
+  }
+});
+</script>
+
+
+<script>
+// Reunión de fin de semana - pleca azul verdoso
+document.querySelectorAll('h2').forEach(h2 => {
+  if (h2.textContent.trim() === 'Reunión de fin de semana') {
+    const mainTable = h2.parentElement.querySelector('table.pretty');
+    if (mainTable) {
+      mainTable.querySelectorAll('thead th').forEach(th => {
+        th.style.background = '#3c7f8b';
+        th.style.color = '#fff';
+      });
+    }
+  }
+});
+
+// Acomodadores — Sábados: plecas y filas alternas por mes
+document.querySelectorAll('h2').forEach(h2 => {
+  if (h2.textContent.includes('Acomodadores — Sábados')) {
+    const tables = h2.parentElement.querySelectorAll('table.pretty');
+    tables.forEach(table => {
+      const headerTh = table.querySelector('thead th[colspan]');
+      if (headerTh) {
+        const text = headerTh.textContent.trim();
+        let color = '', row1 = '', row2 = '';
+        if (text.includes('Octubre')) {
+          color = '#f59e0b'; row1 = '#fef3c7'; row2 = '#fffbeb';
+        } else if (text.includes('Noviembre')) {
+          color = '#9ca3af'; row1 = '#e5e7eb'; row2 = '#f3f4f6';
+        } else if (text.includes('Diciembre')) {
+          color = '#15803d'; row1 = '#dcfce7'; row2 = '#f0fdf4';
+        }
+        if (color) {
+          // Pleca completa
+          headerTh.style.background = color;
+          headerTh.style.color = '#fff';
+          // Filas alternas
+          const rows = table.querySelectorAll('tbody tr');
+          rows.forEach((tr, i) => {
+            tr.style.background = i % 2 === 0 ? row1 : row2;
+          });
+        }
+      }
+    });
+  }
+});
+</script>
+
+</body></html>
