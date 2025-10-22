@@ -116,9 +116,9 @@ textarea{min-height:120px;resize:vertical}
 .section-es .bloque tbody tr:last-child td {
   border-bottom: none;
 }
-.section-es .bloque.azul h3 {background:#1e3a8a;}
-.section-es .bloque.naranja h3 {background:#ea580c;}
-.section-es .bloque.vino h3 {background:#7f1d1d;}
+.section-es .bloque.azul h3 {background:##3c7f8b;}
+.section-es .bloque.naranja h3 {background:##bf8702;}
+.section-es .bloque.vino h3 {background:##bf8702;}
 
 /* Estilo para acomodadores (bloques mensuales) */
 .section-es .tabla-mes {
@@ -648,6 +648,33 @@ document.querySelectorAll('h2').forEach(h2 => {
           });
         }
       }
+    });
+  }
+});
+</script>
+	
+<script>
+// === COLORES PERSONALIZADOS DE LAS PLECAS ===
+// Tesoros de la Biblia → #3c7f8b
+// Seamos mejores maestros → #bf8702
+// Nuestra vida cristiana → #7c0125
+// Texto: blanco
+document.querySelectorAll('.section-es thead').forEach(thead => {
+  const ths = thead.querySelectorAll('th');
+  if (!ths.length) return;
+
+  const firstThText = ths[0].textContent.trim().toLowerCase();
+  let color = '';
+
+  if (firstThText.includes('tesoros de la biblia')) color = '#3c7f8b';
+  else if (firstThText.includes('seamos mejores maestros')) color = '#bf8702';
+  else if (firstThText.includes('nuestra vida cristiana')) color = '#7c0125';
+
+  if (color) {
+    ths.forEach(th => {
+      th.style.backgroundColor = color;
+      th.style.color = '#fff';
+      th.style.border = 'none';
     });
   }
 });
