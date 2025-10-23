@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0062)file:///Users/mac/Desktop/Tablero%20DM/Tablero_DM.html#notocar -->
-<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JW_DM</title>
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="./Tablero DM_files/css2" rel="stylesheet">
+<!-- saved from url=(0062)file:///Users/mac/Desktop/Tablero%20DM/Tablero_DM.html#notocar -->
+<html lang="es"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Tablero DM — Integrado (FDS + ES en tablas)</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="./Tablero DM_files/css2" rel="stylesheet"/>
 <style>
 :root{
   --bg:#f6f8fc; --ink:#0f172a; --muted:#6b7280; --line:#e6ecf5; --card:#fff;
@@ -41,7 +41,11 @@ h1{margin:0 0 4px;font-size:24px}
 }
 
 /* Tarjetas */
-.quick-grid{display:grid;gap:16px;grid-template-columns:repeat(5,minmax(0,1fr))}
+.quick-grid{
+  display:grid;
+  gap:16px;
+  grid-template-columns:repeat(3,minmax(0,1fr)); /* 3 por fila */
+}
 @media(max-width:1100px){.quick-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:900px){.quick-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:640px){.quick-grid{grid-template-columns:repeat(2,1fr)}}
@@ -147,7 +151,7 @@ textarea{min-height:120px;resize:vertical}
 	.thumb img {
   width: 65%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 12px;
 }
 
@@ -156,215 +160,171 @@ textarea{min-height:120px;resize:vertical}
 .section-es .tabla-oct tbody tr:nth-child(odd) {background:#fef3c7;}
 .section-es .tabla-oct tbody tr:nth-child(even) {background:#fffbeb;}
 </style>
-<style type="text/css" id="operaUserStyle"></style></head>
+<style id="operaUserStyle" type="text/css"></style></head>
 <body>
 <div class="container">
-  <h1>Congregación Diaz Mirón</h1>
-  <p class="sub">Infomación de la congregación Diaz Mirón</p>
-
-  <div class="quick-grid" id="quickGrid">
-    <div class="card" data-target="fds"><div class="thumb"> <img src="ICONOS/COLOR/Ico-RFS.svg" alt="Fin de Semana"></div><h3>Reunión de fin de semana</h3><p>Programa y acomodadores.</p></div>
-    <div class="card" data-target="es"><div class="thumb"> <img src="ICONOS/COLOR/Ico-RES.svg" alt="Entre Semana"></div><h3>Reunión entre semana</h3><p>Programa y acoomodadores.</p></div>
-    <div class="card" data-target="territorio"><div class="thumb"> <img src="ICONOS/COLOR/ICO-M.svg" alt="Territorio"></div><h3>Territorio</h3><p>Mapas Díaz Mirón.</p></div>
-    <div class="card" data-target="anuncios"><div class="thumb"> <img src="ICONOS/COLOR/ICO-A.svg" alt="Anuncios"></div><h3>Tablero de anuncios</h3><p>Próximos eventos.</p></div>
-    <div class="card" data-target="notocar"><div class="thumb""> <img src="ICONOS/COLOR/ICO-NT.svg" alt="NO Tocar"></div><h3>NO TOCAR</h3><p>Direcciones del Territorio.</p></div>
-  </div>
-
-  <div class="stage">
-    <!-- FDS -->
-    <div class="view" data-view="fds">
-      <h2>Reunión de fin de semana</h2>
-      <div class="tag">Programa por mes</div>
-      <div class="table-wrap">
-        <table class="pretty">
-          <thead><tr><th>Mes</th><th>Día</th><th>Presidente</th><th>Lector</th><th>Oración</th><th>Hospitalidad</th></tr></thead>
-          <tbody>
-            <!-- Octubre -->
-            <tr><td>Octubre</td><td>5</td><td>Ricardo Cholico</td><td>Said Montaño</td><td>Saúl Jiménez</td><td>G.2</td></tr>
-            <tr><td>Octubre</td><td>12</td><td>Andrey Durán</td><td>Rosendo Cholico</td><td>Rogelio García</td><td>G.3</td></tr>
-            <tr><td>Octubre</td><td>19</td><td>Esteban Fernández</td><td>Rogelio García</td><td>Andrey Durán</td><td>G.4</td></tr>
-            <tr><td>Octubre</td><td>26</td><td>Rogelio García</td><td>Pedro Jiménez</td><td>Ricardo Cholico</td><td>G.1</td></tr>
-            <!-- Noviembre -->
-            <tr><td><strong>Noviembre</strong></td><td>2</td><td colspan="3">ASAMBLEA DE CIRCUITO</td><td></td></tr>
-            <tr><td>Noviembre</td><td>9</td><td>Rosendo Cholico</td><td>—</td><td>Esteban Fernández</td><td>G.2</td></tr>
-            <tr><td>Noviembre</td><td>16</td><td>Pedro Jiménez</td><td>Andrey Durán</td><td>Pedro Jiménez</td><td>G.3</td></tr>
-            <tr><td>Noviembre</td><td>23</td><td>Saúl Montaño</td><td>Marco A. Martínez</td><td>Saúl Montaño</td><td>—</td></tr>
-            <tr><td>Noviembre</td><td>30</td><td>José A. Hernández</td><td>Luis Téllez</td><td>Rosendo Cholico</td><td>G.4</td></tr>
-            <!-- Diciembre -->
-            <tr><td><strong>Diciembre</strong></td><td>6</td><td>Ricardo Cholico</td><td>Eduardo Barrios</td><td>Andrey Durán</td><td>G.1</td></tr>
-            <tr><td>Diciembre</td><td>13</td><td>Andrey Durán</td><td>Arturo Alvarado</td><td>Saúl Jiménez</td><td>G.2</td></tr>
-            <tr><td>Diciembre</td><td>20</td><td>Esteban Fernández</td><td>Ricardo Cholico</td><td>Rogelio García</td><td>G.3</td></tr>
-            <tr><td>Diciembre</td><td>27</td><td>Rogelio García</td><td>Said Montaño</td><td>Ricardo Cholico</td><td>G.4</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div style="height:8px"></div>
-      <div class="tag">Acomodadores — Sábados</div>
-      <div class="table-wrap">
-        <table class="pretty">
-          <thead><tr><th>Mes</th><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr></thead>
-          <tbody>
-            <!-- Octubre -->
-            <tr><td>Octubre</td><td>Sábado 4</td><td>Rogelio García</td><td>Marco A. Martínez</td><td>Said Montaño</td></tr>
-            <tr><td>Octubre</td><td>Sábado 11</td><td>Pedro Jiménez</td><td>Jorge Vergara</td><td>Andrey Durán</td></tr>
-            <tr><td>Octubre</td><td>Sábado 18</td><td>Rosendo Cholico</td><td>Eduardo Barrios</td><td>Esteban Fernández</td></tr>
-            <tr><td>Octubre</td><td>Sábado 25</td><td>Esteban Fernández</td><td>Luis Téllez</td><td>—</td></tr>
-            <!-- Noviembre -->
-            <tr><td>Noviembre</td><td>Sábado 8</td><td>Ricardo Cholico</td><td>Pedro Jiménez</td><td>Marco A. Martínez</td></tr>
-            <tr><td>Noviembre</td><td>Sábado 15</td><td>Andrey Durán</td><td>Emiliano Sanchez</td><td>Rogelio García</td></tr>
-            <tr><td>Noviembre</td><td>Sábado 22</td><td>Said Montaño</td><td>Andrey Durán</td><td>Marco A. Martínez</td></tr>
-            <tr><td>Noviembre</td><td>Sábado 29</td><td>Esteban Fernández</td><td>Angel Sanchez</td><td>Luis Téllez</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Entre semana -->
-    <div class="view section-es" data-view="es">
-      <h2>Reunión entre semana</h2>
-
-      <div class="tag">16 de Octubre — Presidente: Rogelio García — Canción 39 · Eclesiastés 7, 8</div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Vayamos “a la casa donde hay duelo” (10 min.)</td><td>Ricardo Cholico</td><td>—</td><td>Auditorio Principal</td></tr>
-          <tr><td>Busquemos perlas escondidas (10 min.)</td><td>Andrey Durán</td><td>—</td><td>Auditorio Principal</td></tr>
-          <tr><td>Lectura de la Biblia (4 min) Ec 8:1-13</td><td>Ángel Sánchez</td><td>—</td><td>Auditorio Principal</td></tr>
-        </tbody>
-      </table></div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Empiece conversaciones (2 min.)</td><td>Roma Alvarado</td><td>Piedad Molina</td><td>—</td></tr>
-          <tr><td>Empiece conversaciones (2 min.)</td><td>Deyannia España</td><td>Jael Vásquez</td><td>—</td></tr>
-          <tr><td>Haga revisitas (3 min.)</td><td>Iliana de Montaño</td><td>Karen Franco</td><td>—</td></tr>
-          <tr><td>Explique sus creencias (5 min.)</td><td>Epifania García</td><td>Verónica de Andrade</td><td>—</td></tr>
-        </tbody>
-      </table></div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Canción 151</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>Fortalezca su fe en la resurrección (15 min.)</td><td>Esteban Fernández</td><td>—</td><td>—</td></tr>
-          <tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Pedro Jiménez</td><td>—</td><td>—</td></tr>
-          <tr><td>Canción 124 · Palabras de conclusión (3 min.) · Oración: Pedro Jiménez · Lector: Marco Martínez</td><td>—</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table></div>
-
-      <div class="tag">23 de Octubre — Presidente: Andrey Durán — Canción 30 · Eclesiastés 9, 10</div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Tengamos un punto de vista equilibrado (10 min.)</td><td>Esteban Fernández</td><td>—</td><td>Auditorio Principal</td></tr>
-          <tr><td>Busquemos perlas escondidas (10 min.)</td><td>Ricardo Cholico</td><td>—</td><td>Auditorio Principal</td></tr>
-          <tr><td>Lectura de la Biblia (4 min) Ec 10:1-20</td><td>Arturo Alvarado</td><td>—</td><td>Auditorio Principal</td></tr>
-        </tbody>
-      </table></div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Empiece conversaciones (3 min.)</td><td>Rocío Rivas</td><td>Ana Alemán</td><td>—</td></tr>
-          <tr><td>Empiece conversaciones (4 min.)</td><td>José A. Hernández</td><td>Ricardo Cholico</td><td>—</td></tr>
-          <tr><td>Haga discípulos (5 min.)</td><td>Karla Téllez</td><td>Valeria Almreaya</td><td>—</td></tr>
-        </tbody>
-      </table></div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Canción 47</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>Jehová nos da estabilidad… (15 min.)</td><td>Rogelio García</td><td>—</td><td>—</td></tr>
-          <tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Ricardo Cholico</td><td>—</td><td>—</td></tr>
-          <tr><td>Canción 28 · Palabras de conclusión (3 min.) · Oración final: Saúl Jiménez · Lector: Jorge Vergara</td><td>—</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table></div>
-
-      <div class="tag">30 de Octubre — Presidente: Pedro Jiménez — Canción 155 · Eclesiastés 11, 12</div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Disfrute de una vida feliz y saludable (10 min.)</td><td>Rogelio García</td><td>—</td><td>Auditorio Principal</td></tr>
-          <tr><td>Busquemos perlas escondidas (10 min.)</td><td>Esteban Fernández</td><td>—</td><td>Auditorio Principal</td></tr>
-          <tr><td>Lectura de la Biblia (4 min) Ec 12:1-14</td><td>Daniel Segura</td><td>—</td><td>Auditorio Principal</td></tr>
-        </tbody>
-      </table></div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Haga revisitas (3 min.)</td><td>Jazmín Pérez</td><td>Josefina Trujillo</td><td>—</td></tr>
-          <tr><td>Haga revisitas (4 min.)</td><td>Rosalinda Martínez</td><td>Hermelinda Aguilar</td><td>—</td></tr>
-          <tr><td>Discurso (5 min.)</td><td>Florentino Tonches</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table></div>
-      <div class="table-wrap"><table class="pretty">
-        <thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th><th>Ayudante</th><th>Notas</th></tr></thead>
-        <tbody>
-          <tr><td>Canción 111</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>Necesidades de la congregación (15 min.)</td><td>Pedro Jiménez</td><td>—</td><td>—</td></tr>
-          <tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Ricardo Cholico</td><td>—</td><td>—</td></tr>
-          <tr><td>Canción 8 · Palabras de conclusión (3 min.) · Oración: Ricardo Cholico</td><td>—</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table>
-<div style="height:12px"></div>
-<h2>Acomodadores — Jueves</h2>
+<h1>Congregación Diaz Mirón</h1>	
+<p class="sub">Infomación de la congregación Diaz Mirón</p>
+<div class="quick-grid" id="quickGrid"><div class="card" data-target="fds"><div class="thumb"> <img alt="Fin de Semana" src="ICONOS/COLOR/Ico-RFS.svg"/></div><h3>Reunión de fin de semana</h3><p>Programa y acomodadores.</p></div><div class="card" data-target="es"><div class="thumb"> <img alt="Entre Semana" src="ICONOS/COLOR/Ico-RES.svg"/></div><h3>Reunión entre semana</h3><p>Programa y acoomodadores.</p></div><div class="card" data-target="acomodadores"><div class="thumb"><img alt="Entre Semana" src="ICONOS/COLOR/Ico-RES.svg"/></div><h3>Acomodadores</h3><p>Programa por mes.</p></div><div class="card" data-target="territorio"><div class="thumb"> <img alt="Territorio" src="ICONOS/COLOR/ICO-M.svg"/></div><h3>Territorio</h3><p>Mapas Díaz Mirón.</p></div><div class="card" data-target="anuncios"><div class="thumb"> <img alt="Anuncios" src="ICONOS/COLOR/ICO-A.svg"/></div><h3>Tablero de anuncios</h3><p>Próximos eventos.</p></div><div class="card" data-target="notocar"><div "="" class="thumb"> <img src="ICONOS/COLOR/ICO-NT.svg" alt="NO Tocar" width="2"/></div><h3>NO TOCAR</h3><p>Direcciones del Territorio.</p></div></div>
+<div class="stage">
+<!-- FDS -->
+<div class="view" data-view="fds">
+<h2>Reunión de fin de semana</h2>
+<div class="tag">Programa por mes</div>
 <div class="table-wrap">
-  <table class="pretty">
-    <thead style="background:#f59e0b;color:#fff;font-weight:700;text-align:left;">
-      <tr><th colspan="4" style="font-size:16px;">Octubre</th></tr>
-      <tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Jueves 2</td><td>Esteban Fernández</td><td>Rogelio García</td><td>Eduardo Barrios</td></tr>
-      <tr><td>Jueves 9</td><td>Ricardo Cholico</td><td>Angel Sanchez</td><td>Jose A. Hernández</td></tr>
-      <tr><td>Jueves 16</td><td>Andrey Durán</td><td>Jose A. Hernández</td><td>Jordy Vielma</td></tr>
-      <tr><td>Jueves 23</td><td>Said Montaño</td><td>Arturo Alvarado</td><td>Marco A. Martínez</td></tr>
-      <tr><td>Jueves 30</td><td>Saul Jiménez</td><td>Rogelio García</td><td>Gabino Rivas</td></tr>
-    </tbody>
-  </table>
+<table class="pretty">
+<thead><tr><th>Mes</th><th>Día</th><th>Presidente</th><th>Lector</th><th>Oración</th><th>Hospitalidad</th></tr></thead>
+<tbody>
+<!-- Octubre -->
+<tr><td>Octubre</td><td>5</td><td>Ricardo Cholico</td><td>Said Montaño</td><td>Saúl Jiménez</td><td>G.2</td></tr>
+<tr><td>Octubre</td><td>12</td><td>Andrey Durán</td><td>Rosendo Cholico</td><td>Rogelio García</td><td>G.3</td></tr>
+<tr><td>Octubre</td><td>19</td><td>Esteban Fernández</td><td>Rogelio García</td><td>Andrey Durán</td><td>G.4</td></tr>
+<tr><td>Octubre</td><td>26</td><td>Rogelio García</td><td>Pedro Jiménez</td><td>Ricardo Cholico</td><td>G.1</td></tr>
+<!-- Noviembre -->
+<tr><td><strong>Noviembre</strong></td><td>2</td><td colspan="3">ASAMBLEA DE CIRCUITO</td><td></td></tr>
+<tr><td>Noviembre</td><td>9</td><td>Rosendo Cholico</td><td>—</td><td>Esteban Fernández</td><td>G.2</td></tr>
+<tr><td>Noviembre</td><td>16</td><td>Pedro Jiménez</td><td>Andrey Durán</td><td>Pedro Jiménez</td><td>G.3</td></tr>
+<tr><td>Noviembre</td><td>23</td><td>Saúl Montaño</td><td>Marco A. Martínez</td><td>Saúl Montaño</td><td>—</td></tr>
+<tr><td>Noviembre</td><td>30</td><td>José A. Hernández</td><td>Luis Téllez</td><td>Rosendo Cholico</td><td>G.4</td></tr>
+<!-- Diciembre -->
+<tr><td><strong>Diciembre</strong></td><td>6</td><td>Ricardo Cholico</td><td>Eduardo Barrios</td><td>Andrey Durán</td><td>G.1</td></tr>
+<tr><td>Diciembre</td><td>13</td><td>Andrey Durán</td><td>Arturo Alvarado</td><td>Saúl Jiménez</td><td>G.2</td></tr>
+<tr><td>Diciembre</td><td>20</td><td>Esteban Fernández</td><td>Ricardo Cholico</td><td>Rogelio García</td><td>G.3</td></tr>
+<tr><td>Diciembre</td><td>27</td><td>Rogelio García</td><td>Said Montaño</td><td>Ricardo Cholico</td><td>G.4</td></tr>
+</tbody>
+</table>
 </div>
-
+<div style="height:8px"></div>
+<div class="tag">Acomodadores — Sábados</div>
+<div class="table-wrap">
+<table class="pretty">
+<thead><tr><th>Mes</th><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr></thead>
+<tbody>
+<!-- Octubre -->
+<tr><td>Octubre</td><td>Sábado 4</td><td>Rogelio García</td><td>Marco A. Martínez</td><td>Said Montaño</td></tr>
+<tr><td>Octubre</td><td>Sábado 11</td><td>Pedro Jiménez</td><td>Jorge Vergara</td><td>Andrey Durán</td></tr>
+<tr><td>Octubre</td><td>Sábado 18</td><td>Rosendo Cholico</td><td>Eduardo Barrios</td><td>Esteban Fernández</td></tr>
+<tr><td>Octubre</td><td>Sábado 25</td><td>Esteban Fernández</td><td>Luis Téllez</td><td>—</td></tr>
+<!-- Noviembre -->
+<tr><td>Noviembre</td><td>Sábado 8</td><td>Ricardo Cholico</td><td>Pedro Jiménez</td><td>Marco A. Martínez</td></tr>
+<tr><td>Noviembre</td><td>Sábado 15</td><td>Andrey Durán</td><td>Emiliano Sanchez</td><td>Rogelio García</td></tr>
+<tr><td>Noviembre</td><td>Sábado 22</td><td>Said Montaño</td><td>Andrey Durán</td><td>Marco A. Martínez</td></tr>
+<tr><td>Noviembre</td><td>Sábado 29</td><td>Esteban Fernández</td><td>Angel Sanchez</td><td>Luis Téllez</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Entre semana -->
+<div class="view section-es" data-view="es">
+<h2>Reunión entre semana</h2>
+<div class="tag">16 de Octubre — Presidente: Rogelio García — Canción 39 · Eclesiastés 7, 8</div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th></tr></thead>
+<tbody>
+<tr><td>Vayamos “a la casa donde hay duelo” (10 min.)</td><td>Ricardo Cholico</td></tr>
+<tr><td>Busquemos perlas escondidas (10 min.)</td><td>Andrey Durán</td></tr>
+<tr><td>Lectura de la Biblia (4 min) Ec 8:1-13</td><td>Ángel Sánchez</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th></tr></thead>
+<tbody>
+<tr><td>Empiece conversaciones (2 min.)</td><td>Roma Alvarado</td><td>Piedad Molina</td></tr>
+<tr><td>Empiece conversaciones (2 min.)</td><td>Deyannia España</td><td>Jael Vásquez</td></tr>
+<tr><td>Haga revisitas (3 min.)</td><td>Iliana de Montaño</td><td>Karen Franco</td></tr>
+<tr><td>Explique sus creencias (5 min.)</td><td>Epifania García</td><td>Verónica de Andrade</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th></tr></thead>
+<tbody>
+<tr><td>Canción 151</td><td>—</td></tr>
+<tr><td>Fortalezca su fe en la resurrección (15 min.)</td><td>Esteban Fernández</td></tr>
+<tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Pedro Jiménez</td></tr>
+<tr><td>Canción 124 · Palabras de conclusión (3 min.) · Oración: Pedro Jiménez · Lector: Marco Martínez</td><td>—</td></tr>
+</tbody>
+</table></div>
+<div class="tag">23 de Octubre — Presidente: Andrey Durán — Canción 30 · Eclesiastés 9, 10</div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th></tr></thead>
+<tbody>
+<tr><td>Tengamos un punto de vista equilibrado (10 min.)</td><td>Esteban Fernández</td></tr>
+<tr><td>Busquemos perlas escondidas (10 min.)</td><td>Ricardo Cholico</td></tr>
+<tr><td>Lectura de la Biblia (4 min) Ec 10:1-20</td><td>Arturo Alvarado</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th></tr></thead>
+<tbody>
+<tr><td>Empiece conversaciones (3 min.)</td><td>Rocío Rivas</td><td>Ana Alemán</td></tr>
+<tr><td>Empiece conversaciones (4 min.)</td><td>José A. Hernández</td><td>Ricardo Cholico</td></tr>
+<tr><td>Haga discípulos (5 min.)</td><td>Karla Téllez</td><td>Valeria Almreaya</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th></tr></thead>
+<tbody>
+<tr><td>Canción 47</td><td>—</td></tr>
+<tr><td>Jehová nos da estabilidad… (15 min.)</td><td>Rogelio García</td></tr>
+<tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Ricardo Cholico</td></tr>
+<tr><td>Canción 28 · Palabras de conclusión (3 min.) · Oración final: Saúl Jiménez · Lector: Jorge Vergara</td><td>—</td></tr>
+</tbody>
+</table></div>
+<div class="tag">30 de Octubre — Presidente: Pedro Jiménez — Canción 155 · Eclesiastés 11, 12</div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Tesoros de la Biblia</th><th>Asignado</th></tr></thead>
+<tbody>
+<tr><td>Disfrute de una vida feliz y saludable (10 min.)</td><td>Rogelio García</td></tr>
+<tr><td>Busquemos perlas escondidas (10 min.)</td><td>Esteban Fernández</td></tr>
+<tr><td>Lectura de la Biblia (4 min) Ec 12:1-14</td><td>Daniel Segura</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Seamos mejores maestros</th><th>Estudiante</th><th>Ayudante</th></tr></thead>
+<tbody>
+<tr><td>Haga revisitas (3 min.)</td><td>Jazmín Pérez</td><td>Josefina Trujillo</td></tr>
+<tr><td>Haga revisitas (4 min.)</td><td>Rosalinda Martínez</td><td>Hermelinda Aguilar</td></tr>
+<tr><td>Discurso (5 min.)</td><td>Florentino Tonches</td><td>—</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table class="pretty">
+<thead><tr><th>Nuestra vida cristiana</th><th>Asignado</th></tr></thead>
+<tbody>
+<tr><td>Canción 111</td><td>—</td></tr>
+<tr><td>Necesidades de la congregación (15 min.)</td><td>Pedro Jiménez</td></tr>
+<tr><td>Estudio bíblico de la congregación (30 min.)</td><td>Ricardo Cholico</td></tr>
+<tr><td>Canción 8 · Palabras de conclusión (3 min.) · Oración: Ricardo Cholico</td><td>—</td></tr>
+</tbody>
+</table>
 <div style="height:12px"></div>
 <div class="table-wrap">
-  <table class="pretty">
-    <thead style="background:#9ca3af;color:#fff;font-weight:700;text-align:left;">
-      <tr><th colspan="4" style="font-size:16px;">Noviembre</th></tr>
-      <tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Sábado 2</td><td colspan="3" style="text-align:center;font-style:italic;letter-spacing:2px;">ASAMBLEA DE CIRCUITO</td></tr>
-      <tr><td>Jueves 6</td><td>Rogelio García</td><td>Esteban Fernández</td><td>Said Montaño</td></tr>
-      <tr><td>Jueves 13</td><td>Pedro Jiménez</td><td>Eduardo Barrios</td><td>Luis Tellez</td></tr>
-      <tr><td>Jueves 20</td><td>Rosendo Cholico</td><td>Arturo Alvarado</td><td>Jose A. Hernández</td></tr>
-      <tr><td>Jueves 27</td><td>Saul Jiménez</td><td>Gabino Rivas</td><td>Said Montaño</td></tr>
-    </tbody>
-  </table>
+</div>
+<div style="height:12px"></div>
+<div class="table-wrap">
 </div>
 </div>
-    </div>
-
-    <!-- Territorio -->
-    <div class="view" data-view="territorio">
-      <h2>Territorio — Díaz Mirón</h2>
-      <div class="territorio-wrap">
-        <img src="./Tablero DM_files/Territorio1.png" alt="Mapa general">
-        <img src="./Tablero DM_files/Territorio2.png" alt="Sector 3x / 33x">
-      </div>
-    </div>
-
-    <!-- Anuncios -->
-    <div class="view" data-view="anuncios">
-      <h2>Tablero de anuncios</h2>
-      <div class="anuncios" id="anunciosList"><div class="item"><div class="fecha">sáb, 1 nov 2025</div><div class="titulo">Asamblea de circuito con el representante de la sucursal</div></div><div class="item"><div class="fecha">dom, 22 feb 2026</div><div class="titulo">Asamblea de circuito con el superintendente de circuito</div></div><div class="item" style="background: rgb(238, 245, 255);"><div class="fecha">jue, 2 abr 2026</div><div class="titulo">Conmemoración</div></div></div>
-    </div>
-
-    <!-- NO TOCAR -->
-    <div class="view active" data-view="notocar">
-      <h2>Direcciones «No Tocar» — Vista simple</h2>
-      <p class="sub">Al final puedes reportar; se abrirá tu correo para enviar a <code>live24a@gmail.com</code>.</p>
-      <div class="table-wrap">
-        <table class="pretty">
-          <thead><tr><th>Territorio</th><th>Calle / Depto.</th><th>Letra</th><th>Detalles</th><th>Número</th><th>Estado</th><th>Descripción evento</th><th>Responsable</th><th>Última revisión</th></tr></thead>
-          <tbody id="noTocarBody">
+</div>
+<!-- Territorio -->
+<div class="view" data-view="territorio">
+<h2>Territorio — Díaz Mirón</h2>
+<div class="territorio-wrap">
+<img alt="Mapa general" src="./Tablero DM_files/Territorio1.png"/>
+<img alt="Sector 3x / 33x" src="./Tablero DM_files/Territorio2.png"/>
+</div>
+</div>
+<!-- Anuncios -->
+<div class="view" data-view="anuncios">
+<h2>Tablero de anuncios</h2>
+<div class="anuncios" id="anunciosList"></div>
+</div>
+<!-- NO TOCAR -->
+<div class="view active" data-view="notocar">
+<h2>Direcciones «No Tocar» — Vista simple</h2>
+<p class="sub">Al final puedes reportar; se abrirá tu correo para enviar a <code>live24a@gmail.com</code>.</p>
+<div class="table-wrap">
+<table class="pretty">
+<thead><tr><th>Territorio</th><th>Calle / Depto.</th><th>Letra</th><th>Detalles</th><th>Número</th><th>Estado</th><th>Descripción evento</th><th>Responsable</th><th>Última revisión</th></tr></thead>
+<tbody id="noTocarBody">
 <tr><td>2</td><td>Seminario</td><td>A</td><td>Casa a media escalera.</td><td>1</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
 <tr><td>2</td><td>Seminario</td><td>C</td><td>Casa verde a media escalera con un “9 3/4” en la puerta.</td><td>2</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
 <tr><td>4</td><td>1a entrada</td><td>B</td><td>Casita de madera en la primera entrada del predio.</td><td>33</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
@@ -407,40 +367,62 @@ textarea{min-height:120px;resize:vertical}
 <tr><td>31</td><td>Calle novena</td><td>F</td><td>Casa blanca con portón negro.</td><td>14</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
 <tr><td>32</td><td>Capilla</td><td>A</td><td>Casa azul cielo con puerta verde.</td><td>s/n</td><td>🟥 No tocar</td><td></td><td></td><td></td></tr>
 </tbody>
-        </table>
-      </div>
-      <div class="actions">
-        <button id="openReport" class="btn">Reportar nuevo “No Tocar”</button>
-        <button id="downloadCsv" class="btn ghost">Descargar CSV actual</button>
-      </div>
-    </div>
-  </div>
+</table>
 </div>
-
+<div class="actions">
+<button class="btn" id="openReport">Reportar nuevo “No Tocar”</button>
+<button class="btn ghost" id="downloadCsv">Descargar CSV actual</button>
+</div>
+</div>
+<div class="view" data-view="acomodadores"><h2>Acomodadores</h2><div class="tag">Jueves y Sábados — Por mes</div><div class="table-wrap"><table class="pretty">
+<thead style="background:#f59e0b;color:#fff;font-weight:700;text-align:left;">
+<tr><th colspan="4" style="font-size:16px;">Octubre</th></tr>
+<tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr>
+</thead>
+<tbody>
+<tr><td>Jueves 2</td><td>Esteban Fernández</td><td>Rogelio García</td><td>Eduardo Barrios</td></tr>
+<tr><td>Jueves 9</td><td>Ricardo Cholico</td><td>Angel Sanchez</td><td>Jose A. Hernández</td></tr>
+<tr><td>Jueves 16</td><td>Andrey Durán</td><td>Jose A. Hernández</td><td>Jordy Vielma</td></tr>
+<tr><td>Jueves 23</td><td>Said Montaño</td><td>Arturo Alvarado</td><td>Marco A. Martínez</td></tr>
+<tr><td>Jueves 30</td><td>Saul Jiménez</td><td>Rogelio García</td><td>Gabino Rivas</td></tr>
+</tbody>
+</table></div><div class="table-wrap"><table class="pretty">
+<thead style="background:#9ca3af;color:#fff;font-weight:700;text-align:left;">
+<tr><th colspan="4" style="font-size:16px;">Noviembre</th></tr>
+<tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr>
+</thead>
+<tbody>
+<tr><td>Sábado 2</td><td colspan="3" style="text-align:center;font-style:italic;letter-spacing:2px;">ASAMBLEA DE CIRCUITO</td></tr>
+<tr><td>Jueves 6</td><td>Rogelio García</td><td>Esteban Fernández</td><td>Said Montaño</td></tr>
+<tr><td>Jueves 13</td><td>Pedro Jiménez</td><td>Eduardo Barrios</td><td>Luis Tellez</td></tr>
+<tr><td>Jueves 20</td><td>Rosendo Cholico</td><td>Arturo Alvarado</td><td>Jose A. Hernández</td></tr>
+<tr><td>Jueves 27</td><td>Saul Jiménez</td><td>Gabino Rivas</td><td>Said Montaño</td></tr>
+</tbody>
+</table></div><div class="table-wrap"><table class="pretty"><thead style="background:#16a34a;color:#fff;font-weight:700;text-align:left;"><tr><th colspan="4" style="font-size:16px;">Diciembre</th></tr><tr><th>Fecha</th><th>Entrada</th><th>Auditorio</th><th>Extra</th></tr></thead><tbody><tr><td>Jueves 4</td><td>Ricardo Cholico</td><td>Marco A. Martínez</td><td>Pedro Jiménez</td></tr><tr><td>Jueves 11</td><td>Andrey Durán</td><td>Esteban Fernández</td><td>Rogelio García</td></tr><tr><td>Jueves 18</td><td>Rogelio García</td><td>Ángel Sánchez</td><td>Saúl Jiménez</td></tr></tbody></table></div><div style="height:16px"></div><div class="tag">Sábados — Por mes</div></div></div>
+</div>
 <!-- Modal Reporte -->
 <div class="backdrop" id="backdrop">
-  <div class="modal">
-    <h3>Reportar “No Tocar”</h3>
-    <p class="small">Completa los campos. Al enviar, se abrirá un correo listo para mandar a <strong>live24a@gmail.com</strong>.</p>
-    <form id="reportForm">
-      <div class="row">
-        <div><label>Territorio</label><input name="territorio" required=""></div>
-        <div><label>Calle / Depto.</label><input name="calle" required=""></div>
-      </div>
-      <div class="row">
-        <div><label>Número</label><input name="numero"></div>
-        <div><label>Responsable (quien reporta)</label><input name="responsable" required=""></div>
-      </div>
-      <label>Detalles</label>
-      <textarea name="detalles" placeholder="Descripción breve de por qué no se toca, colores de puerta, referencias, etc."></textarea>
-      <div class="form-actions">
-        <button type="button" id="cancel" class="btn ghost">Cancelar</button>
-        <button class="btn" type="submit">Enviar por correo</button>
-      </div>
-    </form>
-  </div>
+<div class="modal">
+<h3>Reportar “No Tocar”</h3>
+<p class="small">Completa los campos. Al enviar, se abrirá un correo listo para mandar a <strong>live24a@gmail.com</strong>.</p>
+<form id="reportForm">
+<div class="row">
+<div><label>Territorio</label><input name="territorio" required=""/></div>
+<div><label>Calle / Depto.</label><input name="calle" required=""/></div>
 </div>
-
+<div class="row">
+<div><label>Número</label><input name="numero"/></div>
+<div><label>Responsable (quien reporta)</label><input name="responsable" required=""/></div>
+</div>
+<label>Detalles</label>
+<textarea name="detalles" placeholder="Descripción breve de por qué no se toca, colores de puerta, referencias, etc."></textarea>
+<div class="form-actions">
+<button class="btn ghost" id="cancel" type="button">Cancelar</button>
+<button class="btn" type="submit">Enviar por correo</button>
+</div>
+</form>
+</div>
+</div>
 <script>
 (function(){
   function show(view){
@@ -512,9 +494,6 @@ textarea{min-height:120px;resize:vertical}
   }
 })();
 </script>
-
-
-
 <script>
 document.querySelectorAll('.section-es thead').forEach(thead => {
   const firstTh = thead.querySelector('th:first-child');
@@ -534,8 +513,6 @@ document.querySelectorAll('.section-es thead').forEach(thead => {
   }
 });
 </script>
-
-
 <script>
 // Colores de secciones
 document.querySelectorAll('.section-es thead').forEach(thead => {
@@ -571,8 +548,6 @@ document.querySelectorAll('thead tr th[colspan]').forEach(th => {
   }
 });
 </script>
-
-
 <script>
 // Colores de encabezado y filas alternas para los Acomodadores — Sábados
 document.querySelectorAll('h2').forEach(h2 => {
@@ -605,8 +580,6 @@ document.querySelectorAll('h2').forEach(h2 => {
   }
 });
 </script>
-
-
 <script>
 // Reunión de fin de semana - pleca azul verdoso
 document.querySelectorAll('h2').forEach(h2 => {
@@ -678,5 +651,4 @@ document.querySelectorAll('.section-es thead').forEach(thead => {
   }
 });
 </script>
-
 </body></html>
