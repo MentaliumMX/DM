@@ -325,7 +325,11 @@ document.addEventListener('DOMContentLoaded', function(){
 <!-- NO TOCAR -->
 <div class="view active" data-view="notocar">
 <h2>Direcciones «No Tocar» — Vista simple</h2>
-<p class="sub">Al final puedes reportar; se abrirá tu correo para enviar a <code>live24a@gmail.com</code>.</p>
+<p class="sub">Por favor, reporta cualquier incidente en la predicación.</code>.</p>
+<div class="actions" style="display:flex; justify-content:flex-start; margin-bottom:12px;">
+  <button class="btn" id="openReport">Reportar nuevo incidente</button>
+</div>
+
 <div class="table-wrap">
 <table class="pretty">
 <thead><tr><th>Territorio</th><th>Calle / Depto.</th><th>Letra</th><th>Detalles</th><th>Número</th><th>Estado</th><th>Descripción evento</th><th>Responsable</th><th>Última revisión</th></tr></thead>
@@ -375,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </table>
 </div>
 <div class="actions">
-<button class="btn" id="openReport">Reportar nuevo “No Tocar”</button>
+<button class="btn" id="openReport">Reportar nuevo incidente</button>
 </div>
 </div>
 <div class="view" data-view="acomodadores"><h2>Acomodadores</h2><div class="tag">Jueves y Sábados — Por mes</div><div class="table-wrap"><table class="pretty">
