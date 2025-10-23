@@ -160,7 +160,29 @@ textarea{min-height:120px;resize:vertical}
 .section-es .tabla-oct tbody tr:nth-child(odd) {background:#fef3c7;}
 .section-es .tabla-oct tbody tr:nth-child(even) {background:#fffbeb;}
 </style>
-<style id="operaUserStyle" type="text/css"></style></head>
+<style id="operaUserStyle" type="text/css"></style><!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// === EmailJS Config ===
+// Reemplaza estos valores por los tuyos en https://dashboard.emailjs.com/
+const EMAILJS_PUBLIC_KEY = '_25pFZCJ-8ysLQL5o';
+const EMAILJS_SERVICE_ID = 'service_yhprqed';
+const EMAILJS_TEMPLATE_ID = 'template_r1ol1ui';
+
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY && !EMAILJS_PUBLIC_KEY.includes('PASTE_')) {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      console.log('EmailJS listo');
+    } else {
+      console.warn('EmailJS no inicializado: agrega tus claves.');
+    }
+  } catch(err){
+    console.error('Error inicializando EmailJS', err);
+  }
+});
+</script>
+</head>
 <body>
 <div class="container">
 <h1>Congregación Diaz Mirón</h1>	
@@ -406,6 +428,9 @@ textarea{min-height:120px;resize:vertical}
 <h3>Reportar “No Tocar”</h3>
 <p class="small">Completa los campos. Al enviar, se abrirá un correo listo para mandar a <strong>live24a@gmail.com</strong>.</p>
 <form id="reportForm">
+  <!-- Honeypot anti-spam -->
+  <input type="text" name="hp" id="hp" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;">
+
 <div class="row">
 <div><label>Territorio</label><input name="territorio" required=""/></div>
 <div><label>Calle / Depto.</label><input name="calle" required=""/></div>
@@ -457,24 +482,84 @@ textarea{min-height:120px;resize:vertical}
   const openBtn = document.getElementById('openReport'); if(openBtn) openBtn.onclick = ()=> bd.style.display='flex';
   const cancelBtn = document.getElementById('cancel'); if(cancelBtn) cancelBtn.onclick = ()=> bd.style.display='none';
 
-  // Mailto submit
+  // Envío con EmailJS (con fallback a mailto)
   const form = document.getElementById('reportForm');
   if(form){
-    form.addEventListener('submit', (e)=>{
+    // cache UI
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.textContent : null;
+
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
       const fd = new FormData(e.target);
+
+      // Honeypot: si está relleno, no enviamos
+      if ((fd.get('hp')||'').trim() !== '') {
+        console.warn('Honeypot activado — envío cancelado');
+        return;
+      }
+
+      // UI: bloquea durante el envío
+      if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Enviando…'; }
+
       const to = 'live24a@gmail.com';
-      const subject = encodeURIComponent('Reporte NO TOCAR — Territorio ' + (fd.get('territorio')||''));
-      const body = [
+      const subject = 'Reporte NO TOCAR — Territorio ' + (fd.get('territorio')||'');
+      const bodyLines = [
         'Territorio: ' + (fd.get('territorio')||''),
         'Calle / Depto.: ' + (fd.get('calle')||''),
         'Número: ' + (fd.get('numero')||''),
         'Detalles: ' + (fd.get('detalles')||''),
         'Reportado por: ' + (fd.get('responsable')||'')
-      ].join('\\n');
-      const href = 'mailto:'+to+'?subject='+subject+'&body='+encodeURIComponent(body);
-      window.location.href = href;
-      bd.style.display='none';
+      ];
+      const body = bodyLines.join('\n');
+
+      // Parámetros para EmailJS (deben coincidir con tu template)
+      const templateParams = {
+        to_email: to,
+        subject: subject,
+        cuerpo: body,
+        // Campos separados por si tu template los usa directamente
+        territorio: fd.get('territorio')||'',
+        calle: fd.get('calle')||'',
+        numero: fd.get('numero')||'',
+        detalles: fd.get('detalles')||'',
+        responsable: fd.get('responsable')||''
+      };
+
+      // ¿Está listo EmailJS?
+      const emailjsReady = (typeof emailjs !== 'undefined')
+        && EMAILJS_PUBLIC_KEY
+        && EMAILJS_SERVICE_ID
+        && EMAILJS_TEMPLATE_ID
+        && !EMAILJS_PUBLIC_KEY.includes('PASTE_')
+        && !EMAILJS_SERVICE_ID.includes('PASTE_')
+        && !EMAILJS_TEMPLATE_ID.includes('PASTE_');
+
+      async function fallbackMailto(){
+        const href = 'mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+        window.location.href = href;
+      }
+
+      try{
+        if(emailjsReady){
+          const res = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+          console.log('EmailJS OK', res);
+          alert('¡Reporte enviado! Gracias por la información.');
+        } else {
+          console.warn('EmailJS no configurado — usando mailto como respaldo.');
+          await fallbackMailto();
+        }
+        // Cierra modal y resetea form
+        e.target.reset();
+        const bd = document.getElementById('backdrop');
+        if(bd){ bd.style.display='none'; }
+      } catch(err){
+        console.error('Error enviando con EmailJS:', err);
+        alert('No se pudo enviar por EmailJS. Intentaremos con tu app de correo.');
+        await fallbackMailto();
+      } finally {
+        if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = originalText || 'Enviar por correo'; }
+      }
     });
   }
 
